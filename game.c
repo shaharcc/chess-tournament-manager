@@ -10,7 +10,6 @@
 #include <string.h>
 #include <stdbool.h>
 
-
 struct games_t{
     int* game_id;
     int first_player;
@@ -19,14 +18,13 @@ struct games_t{
     double play_time;
 };
 
-Game gameCreate(int id, int first_player, int second_player, Winner winner, double play_time) 
-{
+Game gameCreate(int id, int first_player, int second_player, Winner winner, double play_time) {
     Game game = malloc(sizeof(*game));
     if(game == NULL)
         return NULL;
 
     game->game_id = malloc(sizeof(*(game->game_id)));
-    if (game->game_id == NULL){
+    if (game->game_id == NULL) {
         free(game);
         return NULL;
     }
@@ -38,14 +36,13 @@ Game gameCreate(int id, int first_player, int second_player, Winner winner, doub
     return game; 
 }
 
-
-MapDataElement gameCopy(MapDataElement game_to_copy){
+MapDataElement gameCopy(MapDataElement game_to_copy) {
     Game new_game = malloc(sizeof(*new_game));
     if (new_game == NULL)
         return NULL;
         
     new_game->game_id = malloc(sizeof(*(new_game->game_id)));
-    if (new_game->game_id == NULL){
+    if (new_game->game_id == NULL) {
         free(new_game);
         return NULL;
     }
@@ -59,33 +56,28 @@ MapDataElement gameCopy(MapDataElement game_to_copy){
     return (MapDataElement)new_game; 
 }
 
-
-void gameDestroy(MapDataElement generic_game)
-{
+void gameDestroy(MapDataElement generic_game) {
     Game game = generic_game;
     free(game->game_id);
     free(game);
 }
 
-//checks wether a given id is valid or not.
-static bool idValidate(int id)
-{
+// checks wether a given id is valid or not.
+static bool idValidate(int id) {
     if(id > 0)
         return true;
     return false;
 }
 
-//checks wether a given plaer is in the chess system or not.
-static bool isPlayerInSystem(Map players, int player_id)
-{
+// checks wether a given plaer is in the chess system or not.
+static bool isPlayerInSystem(Map players, int player_id) {
     if(mapContains(players, &player_id))
         return true;
     return false;
 }
 
-//checks if a pair of players had played together in a given tournament or not.
-static bool checkIfPlayersPlayedTogether(Tournament tournament, int first_player, int second_player)
-{
+// checks if a pair of players had played together in a given tournament or not.
+static bool checkIfPlayersPlayedTogether(Tournament tournament, int first_player, int second_player) {
     Map games = tournamentGetGames(tournament);
     Game curr_game;
     int original_first_player;
@@ -104,8 +96,7 @@ static bool checkIfPlayersPlayedTogether(Tournament tournament, int first_player
 }
 
 ChessResult gameDataValidate(Map tournaments, Map players, int tournament_id, int first_player,
-                            int second_player, int play_time)
-{
+                            int second_player, int play_time) {
     if(players == NULL)
         return CHESS_NULL_ARGUMENT;
 
@@ -146,35 +137,29 @@ ChessResult gameDataValidate(Map tournaments, Map players, int tournament_id, in
     }    
 }
 
-int gameMakeId(Map tournaments, int tournament_id) 
-{
+int gameMakeId(Map tournaments, int tournament_id)  {
     Tournament tournament = mapGet(tournaments, &tournament_id);
     Map games = tournamentGetGames(tournament);
     int size = mapGetSize(games);
     return size+1;
 }
 
-int gameGetPlayTime(Game game)
-{
+int gameGetPlayTime(Game game) {
     return game->play_time;
 }
 
-int gameGetFirstPlayer(Game game)
-{
+int gameGetFirstPlayer(Game game) {
     return game->first_player;
 }
 
-int gameGetSecondPlayer(Game game)
-{
+int gameGetSecondPlayer(Game game) {
     return game->second_player;
 }
 
-Winner gameGetWinner(Game game)
-{
+Winner gameGetWinner(Game game) {
     return game->winner;
 }
 
-void gameUpdateWinner(Game game, Winner new_winner)
-{
+void gameUpdateWinner(Game game, Winner new_winner) {
     game->winner = new_winner;
 }
