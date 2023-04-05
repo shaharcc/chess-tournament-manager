@@ -11,7 +11,7 @@
 #include <stdbool.h>
 #include <assert.h>
 
-struct participance_t{
+struct participance_t {
     int *tour_id;
     int num_of_games;
     int wins;
@@ -19,14 +19,13 @@ struct participance_t{
     int draws;
 };
 
-Participance participanceCreate(Map participances, int tour_id)
-{
+Participance participanceCreate(Map participances, int tour_id) {
     Participance participance = malloc(sizeof(*participance));
-    if (participance == NULL){
+    if (participance == NULL) {
         return NULL;
     }
     participance->tour_id = malloc(sizeof(*(participance->tour_id)));
-    if (participance->tour_id == NULL){
+    if (participance->tour_id == NULL) {
         free(participance);
         return NULL;
     }
@@ -39,15 +38,14 @@ Participance participanceCreate(Map participances, int tour_id)
     return participance; 
 }
     
-MapDataElement participanceCopy(MapDataElement participance_to_copy)
-{
+MapDataElement participanceCopy(MapDataElement participance_to_copy) {
     Participance new_participance = malloc(sizeof(*new_participance));
     if (new_participance == NULL){
         return NULL;
     }
 
     new_participance->tour_id = malloc(sizeof(*(new_participance->tour_id)));
-    if (new_participance->tour_id == NULL){
+    if (new_participance->tour_id == NULL) {
         free(new_participance);
         return NULL;
     }
@@ -62,61 +60,51 @@ MapDataElement participanceCopy(MapDataElement participance_to_copy)
     return (MapDataElement)new_participance; 
 }
 
-
-void participanceDestroy(MapDataElement generic_participance)
-{
+void participanceDestroy(MapDataElement generic_participance) {
     Participance participance = generic_participance;
     free(participance->tour_id);
     free(participance);
 }
 
-int* participanceGetId(Participance participance)
-{
+int* participanceGetId(Participance participance) {
     int* id = malloc(sizeof(id));
     *id = *(participance->tour_id);
     
     return id; 
 }
 
-int participanceGetWins(Participance participance)
-{
+int participanceGetWins(Participance participance) {
     return participance->wins;
 }
-int participanceGetLosses(Participance participance)
-{
+
+int participanceGetLosses(Participance participance) {
     return participance->losses;
 }
 
-int participanceGetDraws(Participance participance)
-{
+int participanceGetDraws(Participance participance) {
     return participance->draws;
 }
 
-int participanceGetNumOfGames(Participance participance)
-{
+int participanceGetNumOfGames(Participance participance) {
     return participance->num_of_games;
 }
 
-void participanceRaiseNumOfGames(Map participances, int tournament_id)
-{
+void participanceRaiseNumOfGames(Map participances, int tournament_id) {
     assert (participances != NULL); 
     Participance participance = mapGet(participances, &tournament_id);
     (participance->num_of_games)++;
 }
 
-void participanceWinnerUpdate(Map winner_participances, Map loser_participances, int tour_id)
-{
+void participanceWinnerUpdate(Map winner_participances, Map loser_participances, int tour_id) {
     Participance winner_participance = mapGet(winner_participances, &tour_id);
     Participance loser_participance = mapGet(loser_participances, &tour_id);
     winner_participance->wins++;
     loser_participance->losses++;
 }
 
-void participanceDrawUpdate(Map player1_participances, Map player2_participances, int tour_id)
-{
+void participanceDrawUpdate(Map player1_participances, Map player2_participances, int tour_id) {
     Participance player1_participance = mapGet(player1_participances, &tour_id);
     Participance player2_participance = mapGet(player2_participances, &tour_id);
     player1_participance->draws++;
     player2_participance->draws++;
 }
-
