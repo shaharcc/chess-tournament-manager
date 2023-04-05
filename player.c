@@ -25,9 +25,7 @@ struct player_t{
     Map participances;
 };
 
-
-Player playerCreate(int id)
-{
+Player playerCreate(int id) {
     Player player = malloc(sizeof(*player));
     if(player == NULL)
         return NULL;
@@ -48,8 +46,7 @@ Player playerCreate(int id)
     return player;
 }
 
-MapDataElement playerCopy(MapDataElement player_to_copy)
-{
+MapDataElement playerCopy(MapDataElement player_to_copy) {
     if (player_to_copy == NULL){
         return NULL;
     }
@@ -82,25 +79,20 @@ MapDataElement playerCopy(MapDataElement player_to_copy)
     return new_player; 
 }
 
-
-
-void playerDestroy(Player player)
-{
+void playerDestroy(Player player) {
     mapDestroy(player->participances);
     free(player->player_id);
     free(player);
 }
 
-//checks if the id is valid, meaning more than 0.
-static bool idValidate(int id)
-{
+// checks if the id is valid, meaning more than 0.
+static bool idValidate(int id) {
     if(id > 0)
         return true;
     return false;
 }
 
-ChessResult playerDataValidate(Map players, int player_id)
-{
+ChessResult playerDataValidate(Map players, int player_id) {
     if(!idValidate(player_id)){
         return CHESS_INVALID_ID;
     }
@@ -110,9 +102,7 @@ ChessResult playerDataValidate(Map players, int player_id)
     return CHESS_SUCCESS;
 }
 
-
-void setOpponentAsWinner(Map tournaments, int player_id)
-{
+void setOpponentAsWinner(Map tournaments, int player_id) {
     Tournament curr_tournament;
     Game curr_game;
     MAP_FOREACH(int*, tournament_iter, tournaments)
@@ -142,17 +132,14 @@ void setOpponentAsWinner(Map tournaments, int player_id)
     }
 }
 
-
-double playerCalculateAveragePlayTime(Map players, int player_id)
-{
+double playerCalculateAveragePlayTime(Map players, int player_id) {
     Player player = mapGet(players, &player_id);
     double total_play_time = player->play_time;
     int num_of_games = player->num_of_games;
     return (double)(total_play_time/num_of_games);
 }
 
-static void swap(double**arr,int player1,int player2)
-{
+static void swap(double**arr,int player1,int player2) {
     int temp;
     for(int i = 0; i < NUM_OF_COMPONENTS; i++){
         temp=arr[player1][i];
@@ -161,7 +148,6 @@ static void swap(double**arr,int player1,int player2)
     }
 }
 
-//sorts a given array
 static void bubbleSort(double** array, int size)
 {
    for (int i = 0; i < size-1; i++)     
@@ -170,8 +156,7 @@ static void bubbleSort(double** array, int size)
               swap(array, j, j+1);
 }
 
-void playerAssignLevel(double **players_array, Map players)
-{
+void playerAssignLevel(double **players_array, Map players) {
     int counter = 0;
     Player curr_player;
 
@@ -182,13 +167,11 @@ void playerAssignLevel(double **players_array, Map players)
         counter++;
         free(player_iter);
     }
-    
     int size = mapGetSize(players);
     bubbleSort(players_array, size);
 }
         
-double playerCalculateLevel(Player player)
-{
+double playerCalculateLevel(Player player) {
     double num_wins, num_losses, num_draws, n;
     num_wins = player->num_wins;
     num_losses = player->num_losses;
@@ -197,9 +180,7 @@ double playerCalculateLevel(Player player)
     return (double)((6*num_wins-10*num_losses+2*num_draws)/n);
 }
 
-
-ChessResult printToFile(Map players, double** players_array, FILE* file)
-{
+ChessResult printToFile(Map players, double** players_array, FILE* file) {
     for(int i = 0; i < mapGetSize(players); i++){
         if(!fprintf(file, "%.0lf %.2lf\n", players_array[i][ID], players_array[i][LEVEL]))
             return CHESS_SAVE_FAILURE;
@@ -208,11 +189,10 @@ ChessResult printToFile(Map players, double** players_array, FILE* file)
     return CHESS_SUCCESS;
 }
 
-//adds a new player to the map of players in the chess system
-static ChessResult addPlayer(Map players, int id)
-{
+// adds a new player to the map of players in the chess system
+static ChessResult addPlayer(Map players, int id) {
     Player player = playerCreate(id);
-    if(player == NULL){
+    if(player == NULL) {
         return CHESS_OUT_OF_MEMORY;
     }
     player->num_wins = 0;
@@ -229,8 +209,7 @@ static ChessResult addPlayer(Map players, int id)
     return CHESS_SUCCESS;
 }
 
-
-ChessResult updatePlayersData(Map players, int first_player, int second_player, Winner winner, int play_time, int tour_id){
+ChessResult updatePlayersData(Map players, int first_player, int second_player, Winner winner, int play_time, int tour_id) {
     assert(players != NULL);
     Player player1 = mapGet(players, &first_player);
     Player player2 = mapGet(players, &second_player);
@@ -268,23 +247,20 @@ ChessResult updatePlayersData(Map players, int first_player, int second_player, 
     return CHESS_SUCCESS;
 }
 
-Map playerGetParticipances(Player player)
-{
+Map playerGetParticipances(Player player) {
     return player->participances; 
 }
 
-//checks if a given player is new in the chess system
-static bool playerCheckIfNew(Map players, int player_id)
-{
+// checks if a given player is new in the chess system
+static bool playerCheckIfNew(Map players, int player_id) {
     if(mapContains(players, &player_id)){
         return false;
     }
     return true;
 }
 
-//adds a participance in a given tournament to a given player
-static ChessResult addParticipance(int tournament_id, Player player)
-{
+// adds a participance in a given tournament to a given player
+static ChessResult addParticipance(int tournament_id, Player player) {
     Participance participance = participanceCreate(player->participances, tournament_id);
     if(participance == NULL){
         return CHESS_OUT_OF_MEMORY;
@@ -297,21 +273,16 @@ static ChessResult addParticipance(int tournament_id, Player player)
     return CHESS_SUCCESS;
 }
 
-//checks if the number of games exceeded the maximum possible
-static bool isMaxGamesExceeded(int num_of_games, int max)
-{
-    if (num_of_games < max){
+// checks if the number of games exceeded the maximum possible
+static bool isMaxGamesExceeded(int num_of_games, int max) {
+    if (num_of_games < max) {
         return false;
     }
     return true;
 }
 
-
-
-ChessResult playerCheckIfCanPlayInTournament(Map players, int player_id, int tournament_id, int max_games_for_player)
-{
+ChessResult playerCheckIfCanPlayInTournament(Map players, int player_id, int tournament_id, int max_games_for_player) {
     ChessResult res = CHESS_SUCCESS;
-    
     if (playerCheckIfNew(players, player_id)){
         res = addPlayer(players, player_id);
         if (res != CHESS_SUCCESS){
@@ -321,7 +292,6 @@ ChessResult playerCheckIfCanPlayInTournament(Map players, int player_id, int tou
         res = addParticipance(tournament_id, player);
         return res;
     }
-
 
     else { //if player is already in the players map
         Player player = mapGet(players, &player_id); 
